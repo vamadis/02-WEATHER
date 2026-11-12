@@ -47,3 +47,17 @@ Esta es la apariencia que deseamos crear
 ════════════════════════════════════════
   Selecciona una opción: 5
 ```
+
+## Ejecutar
+
+```bash
+bun index.ts
+```
+
+## Compilar binario ejecutable
+
+```bash
+bun build --compile index.ts --outfile weather
+```
+
+Genera un ejecutable `weather` (o `weather.exe` en Windows) que se puede distribuir sin dependencias.
