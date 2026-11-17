@@ -1,6 +1,10 @@
 # dependencies (bun install)
 node_modules
 
+#buid
+weather
+
+
 # output
 out
 dist
