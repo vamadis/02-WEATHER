@@ -1,4 +1,5 @@
 import type { City, Forecast, Unit } from "../types.ts";
+import { yellow } from "./colors.ts";
 
 // Códigos WMO -> descripción en español
 const WEATHER_DESCRIPTIONS: Record<number, string> = {
@@ -44,6 +45,7 @@ export function printWeather(city: City, forecast: Forecast, unit: Unit): void {
   const location = city.country ? `${city.name}, ${city.country}` : city.name;
   console.log(`\n  ${location}`);
   console.log(`    ${describeWeather(forecast.weatherCode)}`);
-  console.log(`    Temperatura: ${forecast.temperature}${unitSymbol(unit)}`);
+  const temperature = yellow(`${forecast.temperature}${unitSymbol(unit)}`);
+  console.log(`    Temperatura: ${temperature}`);
   console.log(`    Viento: ${forecast.windSpeed} km/h`);
 }

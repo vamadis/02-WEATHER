@@ -4,6 +4,7 @@ import { getForecast } from "../api/forecast.ts";
 import { loadConfig, saveConfig } from "../storage/config.ts";
 import { ask, closePrompt } from "./prompt.ts";
 import { printWeather, unitSymbol } from "./display.ts";
+import { bold, cyan, green, red, yellow } from "./colors.ts";
 
 const BORDER = "════════════════════════════════════════";
 const TITLE = "         WEATHER CLI";
@@ -22,23 +23,23 @@ export async function runMenu(): Promise<void> {
       }
       saveConfig(config);
     } catch (err) {
-      console.log(`\n  Error: ${errorMessage(err)}\n`);
+      console.log(`\n  ${red(`Error: ${errorMessage(err)}`)}\n`);
     }
   }
 }
 
 function renderMenu(config: Config): void {
-  console.log(BORDER);
-  console.log(TITLE);
-  console.log(BORDER);
-  console.log("  1. Clima de ciudad default");
-  console.log(`  2. Clima de todas las ciudades (${config.cities.length})`);
-  console.log("  3. Buscar y agregar ciudad");
-  console.log("  4. Eliminar ciudad");
-  console.log("  5. Establecer ciudad default");
-  console.log(`  8. Ajustes (${unitSymbol(config.unit)})`);
-  console.log("  9. Salir");
-  console.log(BORDER);
+  console.log(cyan(BORDER));
+  console.log(cyan(bold(TITLE)));
+  console.log(cyan(BORDER));
+  console.log(cyan("  1. Clima de ciudad default"));
+  console.log(cyan(`  2. Clima de todas las ciudades (${config.cities.length})`));
+  console.log(cyan("  3. Buscar y agregar ciudad"));
+  console.log(cyan("  4. Eliminar ciudad"));
+  console.log(cyan("  5. Establecer ciudad default"));
+  console.log(cyan(`  8. Ajustes (${unitSymbol(config.unit)})`));
+  console.log(cyan("  9. Salir"));
+  console.log(cyan(BORDER));
 }
 
 async function handleOption(option: string, config: Config): Promise<boolean> {
@@ -62,10 +63,10 @@ async function handleOption(option: string, config: Config): Promise<boolean> {
       toggleUnit(config);
       return false;
     case "9":
-      console.log("\n  ¡Hasta pronto!\n");
+      console.log(`\n  ${green("¡Hasta pronto!")}\n`);
       return true;
     default:
-      console.log("\n  Opción inválida.\n");
+      console.log(`\n  ${red("Opción inválida.")}\n`);
       return false;
   }
 }
@@ -94,11 +95,11 @@ async function searchAndAdd(config: Config): Promise<void> {
   if (!name) return;
   const city = await resolveCity(name);
   if (!city) {
-    console.log(`\n  No se encontró "${name}".\n`);
+    console.log(`\n  ${red(`No se encontró "${name}".`)}\n`);
     return;
   }
   if (alreadySaved(config, city)) {
-    console.log(`\n  "${city.name}" ya está guardada.\n`);
+    console.log(`\n  ${yellow(`"${city.name}" ya está guardada.`)}\n`);
     return;
   }
   config.cities.push(city);
@@ -119,11 +120,11 @@ async function deleteCity(config: Config): Promise<void> {
   const idx = Number(input) - 1;
   const removed = config.cities[idx];
   if (!removed || Number.isNaN(idx)) {
-    console.log("\n  Selección inválida.\n");
+    console.log(`\n  ${red("Selección inválida.")}\n`);
     return;
   }
   config.cities.splice(idx, 1);
-  console.log(`\n  Eliminada: ${removed.name}\n`);
+  console.log(`\n  ${green(`Eliminada: ${removed.name}`)}\n`);
 }
 
 async function setDefaultCity(config: Config): Promise<void> {
@@ -131,7 +132,7 @@ async function setDefaultCity(config: Config): Promise<void> {
   if (!name) return;
   const city = await resolveCity(name);
   if (!city) {
-    console.log(`\n  No se encontró "${name}".\n`);
+    console.log(`\n  ${red(`No se encontró "${name}".`)}\n`);
     return;
   }
   // La antigua default pasa a la lista de guardadas
@@ -141,12 +142,12 @@ async function setDefaultCity(config: Config): Promise<void> {
   // Si la nueva default ya estaba guardada, se saca de la lista
   config.cities = config.cities.filter((c) => !sameCity(c, city));
   config.defaultCity = city;
-  console.log(`\n  Ciudad default: ${city.name}\n`);
+  console.log(`\n  ${green(`Ciudad default: ${city.name}`)}\n`);
 }
 
 function toggleUnit(config: Config): void {
   config.unit = config.unit === "celsius" ? "fahrenheit" : "celsius";
-  console.log(`\n  Unidad: ${unitSymbol(config.unit)}\n`);
+  console.log(`\n  ${green(`Unidad: ${unitSymbol(config.unit)}`)}\n`);
 }
 
 async function showWeather(city: City, unit: Unit): Promise<void> {
