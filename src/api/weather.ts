@@ -1,13 +1,13 @@
-import type { Forecast, Unit } from "../types.ts";
+import type { Unit, Weather } from "../types/Weather.ts";
 
 const FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
 
 // Coordenadas -> clima actual (temperatura, código WMO, viento)
-export async function getForecast(
+export async function getWeather(
   lat: number,
   lon: number,
   unit: Unit,
-): Promise<Forecast> {
+): Promise<Weather> {
   const url =
     `${FORECAST_URL}?latitude=${lat}&longitude=${lon}` +
     `&current=temperature_2m,weather_code,wind_speed_10m` +

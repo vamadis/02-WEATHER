@@ -3,8 +3,9 @@
 ## Commands
 
 - **Typecheck:** `bun run typecheck` → runs `bun check` (Bun's built-in typechecker, not `tsc`).
-- **Run:** `bun index.ts`.
-- No test runner or build script is defined yet.
+- **Run:** `bun src/index.ts`.
+- **Build:** `bun run build` (outputs to `dist/`); standalone binary: `bun build --compile src/index.ts --outfile weather`.
+- No test runner is defined yet.
 
 ## TypeScript strictness (tsconfig.json)
 
@@ -15,7 +16,15 @@
 
 ## Architecture
 
-- Entrypoint: `index.ts` (`package.json` `module` field). Currently just the `bun init` scaffold — feature work starts here.
-- Weather lookup is a 2-step OpenMeteo flow: geocoding (city → lat/long) → forecast (lat/long → temperature).
+- Entrypoint: `src/index.ts` (`package.json` `module` field). It runs the one-time storage migration and starts the menu loop.
+- Layered structure under `src/`:
+  - `actions/` — user actions (getWeather, addCity, removeCity, setDefaultCity, listCities, settings). They orchestrate I/O through `presentation/`.
+  - `presentation/` — console UI: `menu.ts` (render + dispatch via `MENU_ITEMS`), `input.ts` (ask/askNumber), `output.ts` (messages, printWeather, printCityList).
+  - `storage/` — local persistence in `~/.weather-cli/`: `cities.json` (`citiesStorage.ts`), `settings.json` (`settingsStorage.ts`), `jsonFile.ts` (shared JSON read/write), `migration.ts` (one-time split from legacy `config.json`, never deletes it).
+  - `types/` — one file per domain type: City, Weather (+Unit), Geocoding, Settings, MenuOption.
+  - `api/` — OpenMeteo integration: `geocoding.ts` (city → coords), `weather.ts` (coords → current weather).
+  - `utils/` — `format.ts`, `constants.ts` (DATA_DIR), `colors.ts`, `city.ts` (isSameCity, findCity, removeMatches).
+- Weather lookup is a 2-step OpenMeteo flow: geocoding (city → lat/long) → weather (lat/long → temperature).
 - OpenMeteo needs **no API key and no `.env`** — don't add auth or env-loading code.
+- The menu loop keeps `cities` + `settings` in memory and saves both storages after every action.
 - End goal (README): a standalone executable binary; CLI menu and UI text are in **Spanish**.

@@ -42,6 +42,7 @@ Esta es la apariencia que deseamos crear
   3. Buscar y agregar ciudad
   4. Eliminar ciudad
   5. Establecer ciudad default
+  6. Listar ciudades guardadas
   8. Ajustes (°C)
   9. Salir
 ════════════════════════════════════════
@@ -51,13 +52,13 @@ Esta es la apariencia que deseamos crear
 ## Ejecutar
 
 ```bash
-bun index.ts
+bun src/index.ts
 ```
 
 ## Compilar binario ejecutable
 
 ```bash
-bun build --compile index.ts --outfile weather
+bun build --compile src/index.ts --outfile weather
 ```
 
 Genera un ejecutable `weather` (o `weather.exe` en Windows) que se puede distribuir sin dependencias.

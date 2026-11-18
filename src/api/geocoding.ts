@@ -1,4 +1,4 @@
-import type { GeocodingResult } from "../types.ts";
+import type { GeocodingResult } from "../types/Geocoding.ts";
 
 const GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search";
 
