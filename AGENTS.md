@@ -3,9 +3,9 @@
 ## Commands
 
 - **Typecheck:** `bun run typecheck` → runs `bun check` (Bun's built-in typechecker, not `tsc`).
+- **Test:** `bun test` (or `bun run test`). All tests live in `tests/` as `*.test.ts`, mirroring `src/`. `bunfig.toml` preloads `tests/helpers/setup.ts`, which runs before any `src/` module loads and uses `mock.module` to point `DATA_DIR` at a per-run temp dir and replace the `presentation/` layer with controllable mocks (`tests/helpers/testState.ts`). Network calls are stubbed per test via `tests/helpers/fetchMock.ts`; fixtures in `tests/helpers/fixtures.ts`.
 - **Run:** `bun src/index.ts`.
-- **Build:** `bun run build` (outputs to `dist/`); standalone binary: `bun build --compile src/index.ts --outfile weather`.
-- No test runner is defined yet.
+- **Build:** `bun run build` → runs `bun check && bun test && bun build --target=bun` first; the build fails (and is skipped) if types or tests fail. Outputs to `dist/`; standalone binary: `bun build --compile src/index.ts --outfile weather`.
 
 ## TypeScript strictness (tsconfig.json)
 
